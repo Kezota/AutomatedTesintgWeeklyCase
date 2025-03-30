@@ -21,6 +21,6 @@ router.get("/", (_, response) => {
 router.use("/", authRoutes);
 
 // Product routes
-router.use("/", authMiddleware, productRoutes);
+router.use("/products", authMiddleware, productRoutes);
 
 export default router;
