@@ -3,76 +3,75 @@ import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
-export const getProduct = async (req: Request, res: Response) => {
-  console.log("getProduct", req.body);
-
-  const products = await prisma.product.findMany();
-  return res.status(200).json({
-    message: "Products retrieved successfully",
-    data: products,
-  }) as any;
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await prisma.product.findMany();
+    return res.status(200).json({
+      message: "Products retrieved successfully",
+      data: products,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to get products" });
+  }
 };
 
 export const createProduct = async (req: Request, res: Response) => {
-  console.log("createProduct", req.body);
-
   const { name, stock } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Name is required" });
+
+  if (!name || stock == null) {
+    return res.status(400).json({ message: "Name and stock are required" });
   }
-  if (!stock) {
-    return res.status(400).json({ message: "Stock is required" });
+
+  try {
+    const createdProduct = await prisma.product.create({
+      data: { name, stock },
+    });
+
+    return res.status(201).json({
+      message: "Product created successfully",
+      data: createdProduct,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to create product" });
   }
-  const createdProduct = await prisma.product.create({
-    data: {
-      name: name,
-      stock: stock,
-    },
-  });
-  return res.status(200).json({
-    message: "Product created successfully",
-    data: createdProduct,
-  }) as any;
 };
 
 export const updateProduct = async (req: Request, res: Response) => {
-  console.log("updateProduct", req.body);
-
+  const { id } = req.params;
   const { name, stock } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Name is required" });
+
+  if (!name || stock == null) {
+    return res.status(400).json({ message: "Name and stock are required" });
   }
-  if (!stock) {
-    return res.status(400).json({ message: "Stock is required" });
+
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: { id: Number(id) },
+      data: { name, stock },
+    });
+
+    return res.status(200).json({
+      message: "Product updated successfully",
+      data: updatedProduct,
+    });
+  } catch (error) {
+    return res.status(404).json({ message: "Product not found" });
   }
-  const updatedProduct = await prisma.product.update({
-    where: {
-      name: name,
-    },
-    data: {
-      stock: stock,
-    },
-  });
-  return res.status(200).json({
-    message: "Product updated successfully",
-    data: updatedProduct,
-  }) as any;
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
-  console.log("deleteProduct", req.body);
+  const { id } = req.params;
 
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Name is required" });
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.status(200).json({
+      message: "Product deleted successfully",
+      data: deletedProduct,
+    });
+  } catch (error) {
+    return res.status(404).json({ message: "Product not found" });
   }
-  const deletedProduct = await prisma.product.delete({
-    where: {
-      name: name,
-    },
-  });
-  return res.status(200).json({
-    message: "Product deleted successfully",
-    data: deletedProduct,
-  }) as any;
 };

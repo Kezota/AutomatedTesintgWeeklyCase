@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -21,15 +20,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Product } from "@/lib/types";
 import {
-  addProduct,
-  deleteProduct,
-  fetchProducts,
-  updateProduct,
-} from "@/services/productService";
+  useCreateProduct,
+  useDeleteProduct,
+  useProducts,
+  useUpdateProduct,
+} from "@/hooks/useProduct";
 
 export function Dashboard() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -37,64 +36,84 @@ export function Dashboard() {
   const [updateStock, setUpdateStock] = useState<number>(0);
   const [addName, setAddName] = useState<string>("");
   const [addStock, setAddStock] = useState<number>(0);
+
   const [isAddDialogOpen, setAddDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setUpdateDialogOpen] = useState(false);
-  const {
-    data: products,
-    isLoading,
-    isError,
-  } = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: fetchProducts,
-  });
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { data: products, isLoading } = useProducts();
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProduct = useDeleteProduct();
+  const navigate = useNavigate();
+
+  // Middleware
+  useEffect(() => {
+    const isAuthenticated = () => {
+      const token = localStorage.getItem("token");
+      return !!token;
+    };
+    if (!isAuthenticated()) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleAddProduct = async () => {
     const newProduct: Product = { name: addName, stock: addStock };
-    try {
-      await addProduct(newProduct);
-      toast.success("Product added successfully!");
-    } catch (error) {
-      toast.error("Error adding product.");
-      console.error("Error adding product:", error);
-    } finally {
-      setAddDialogOpen(false);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteProduct(id);
-      toast.success("Product deleted successfully!");
-    } catch (error) {
-      toast.error("Error deleting product.");
-      console.error("Error deleting product:", error);
-    } finally {
-      setDeleteDialogOpen(false);
-    }
+    createProduct.mutate(newProduct, {
+      onSuccess: () => {
+        setAddDialogOpen(false);
+        setAddName("");
+        setAddStock(0);
+      },
+      onError: () => {
+        setAddDialogOpen(false);
+        setAddName("");
+        setAddStock(0);
+      },
+    });
   };
 
   const handleUpdate = async () => {
     if (selectedProduct) {
       const updatedProduct = {
         ...selectedProduct,
+        id: selectedProduct.id!,
         name: updateName,
         stock: updateStock,
       };
-      try {
-        await updateProduct(updatedProduct);
-        toast.success("Product updated successfully!");
-      } catch (error) {
-        toast.error("Error updating product.");
-        console.error("Error updating product:", error);
-      } finally {
-        setUpdateDialogOpen(false);
-      }
+
+      updateProduct.mutate(updatedProduct, {
+        onSuccess: () => {
+          setUpdateDialogOpen(false);
+          setSelectedProduct(null);
+          setUpdateName("");
+          setUpdateStock(0);
+        },
+        onError: () => {
+          setUpdateDialogOpen(false);
+          setSelectedProduct(null);
+          setUpdateName("");
+          setUpdateStock(0);
+        },
+      });
     }
   };
 
+  const handleDelete = async (id: number) => {
+    deleteProduct.mutate(id, {
+      onSuccess: () => {
+        setDeleteDialogOpen(false);
+        setSelectedProduct(null);
+      },
+      onError: () => {
+        setDeleteDialogOpen(false);
+        setSelectedProduct(null);
+      },
+    });
+  };
+
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading products :(</div>;
 
   return (
     <section className="p-6 bg-white shadow-md rounded-lg">
@@ -306,7 +325,12 @@ export function Dashboard() {
 
       {/* Action Buttons */}
       <div className="mt-4 flex justify-between items-center">
-        <Button className="bg-blue-500 text-white">Add New Product</Button>
+        <Button
+          className="bg-blue-500 text-white"
+          onClick={() => setAddDialogOpen(true)}
+        >
+          Add New Product
+        </Button>
       </div>
     </section>
   );

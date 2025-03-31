@@ -1,49 +1,35 @@
 import { API } from "@/lib/API";
-import { Product } from "@/lib/types";
-import { toast } from "react-toastify";
+import {
+  CreateProductPayload,
+  Product,
+  ProductListResponse,
+  ProductResponse,
+  UpdateProductPayload,
+} from "@/lib/types";
 
-// Fetch all products
-export const fetchProducts = async (): Promise<Product[]> => {
-  try {
-    const response = await API.get<Product[]>("/products");
-    return response.data;
-  } catch (error) {
-    toast.error("Error fetching products.");
-    throw error; // Re-throw error for handling in component if needed
-  }
+export const getProducts = async (): Promise<Product[]> => {
+  const res = await API.get<ProductListResponse>("/products");
+  return res.data.data;
 };
 
-// Add new product
-export const addProduct = async (product: Product): Promise<Product> => {
-  try {
-    const response = await API.post<Product>("/products", product);
-    toast.success("Product added successfully!");
-    return response.data;
-  } catch (error) {
-    toast.error("Error adding product.");
-    throw error; // Re-throw error for handling in component
-  }
+export const createProduct = async (
+  payload: CreateProductPayload
+): Promise<Product> => {
+  const res = await API.post<ProductResponse>("/products", payload);
+  return res.data.data;
 };
 
-// Update product
-export const updateProduct = async (product: Product): Promise<Product> => {
-  try {
-    const response = await API.put<Product>(`/products/${product.id}`, product);
-    toast.success("Product updated successfully!");
-    return response.data;
-  } catch (error) {
-    toast.error("Error updating product.");
-    throw error; // Re-throw error for handling in component
-  }
+export const updateProduct = async (
+  payload: UpdateProductPayload
+): Promise<Product> => {
+  const res = await API.put<ProductResponse>(
+    `/products/${payload.id}`,
+    payload
+  );
+  return res.data.data;
 };
 
-// Delete product
-export const deleteProduct = async (id: number): Promise<void> => {
-  try {
-    await API.delete(`/products/${id}`);
-    toast.success("Product deleted successfully!");
-  } catch (error) {
-    toast.error("Error deleting product.");
-    throw error; // Re-throw error for handling in component
-  }
+export const deleteProduct = async (id: number): Promise<Product> => {
+  const res = await API.delete<ProductResponse>(`/products/${id}`);
+  return res.data.data;
 };

@@ -24,3 +24,24 @@ export type LoginRegisterResponse = {
   token: string;
   user: Admin;
 };
+
+export type CreateProductPayload = {
+  name: string;
+  stock: number;
+};
+
+export type UpdateProductPayload = {
+  id: number;
+  name: string;
+  stock: number;
+};
+
+export type ProductListResponse = {
+  message: string;
+  data: Product[];
+};
+
+export type ProductResponse = {
+  message: string;
+  data: Product;
+};
