@@ -85,7 +85,7 @@ export const register = async (req: Request, res: Response) => {
       },
     });
 
-    const expiresInSeconds = 3600;
+    const expiresInSeconds = 3600 * 24;
     const token = jwt.sign({ userId: newUser.id }, JWT_SECRET_KEY!, {
       expiresIn: expiresInSeconds,
     });

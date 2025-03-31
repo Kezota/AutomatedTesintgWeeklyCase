@@ -22,6 +22,11 @@ export const createProduct = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Name and stock are required" });
   }
 
+  // Validasi stock
+  if (typeof stock !== "number") {
+    return res.status(400).json({ message: "Stock must be a number" });
+  }
+
   try {
     const createdProduct = await prisma.product.create({
       data: { name, stock },
@@ -42,6 +47,11 @@ export const updateProduct = async (req: Request, res: Response) => {
 
   if (!name || stock == null) {
     return res.status(400).json({ message: "Name and stock are required" });
+  }
+
+  // Validasi stock
+  if (typeof stock !== "number") {
+    return res.status(400).json({ message: "Stock must be a number" });
   }
 
   try {

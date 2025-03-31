@@ -1,11 +1,10 @@
 import request from "supertest";
 import express from "express";
-import { login, register } from "../controllers/AuthController";
+import router from "../routes";
 
 const app = express();
 app.use(express.json());
-app.post("/login", login);
-app.post("/register", register);
+app.use("/", router);
 
 describe("AuthController", () => {
   describe("POST /register", () => {
@@ -15,7 +14,9 @@ describe("AuthController", () => {
         password: "password123",
       });
       expect(res.statusCode).toBe(201);
-      expect(res.body).toHaveProperty("message", "User created successfully");
+      expect(res.body).toHaveProperty("token"); // Expect token to be present
+      expect(res.body).toHaveProperty("expiresIn");
+      expect(res.body).toHaveProperty("user"); // Expect user info
     });
 
     it("should return 400 if email is missing", async () => {
@@ -23,7 +24,10 @@ describe("AuthController", () => {
         password: "password123",
       });
       expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty("message", "Email is required");
+      expect(res.body).toHaveProperty(
+        "message",
+        "Email and password are required"
+      );
     });
 
     it("should return 400 if password is missing", async () => {
@@ -31,7 +35,10 @@ describe("AuthController", () => {
         email: "test@example.com",
       });
       expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty("message", "Password is required");
+      expect(res.body).toHaveProperty(
+        "message",
+        "Email and password are required"
+      );
     });
 
     it("should return 400 if email is invalid", async () => {
@@ -40,7 +47,7 @@ describe("AuthController", () => {
         password: "password123",
       });
       expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty("message", "Email is invalid");
+      expect(res.body).toHaveProperty("message", "Invalid email format");
     });
 
     it("should return 409 if email already exists", async () => {
@@ -59,17 +66,14 @@ describe("AuthController", () => {
 
   describe("POST /login", () => {
     it("should login an existing user", async () => {
-      await request(app).post("/register").send({
-        email: "test@example.com",
-        password: "password123",
-      });
       const res = await request(app).post("/login").send({
         email: "test@example.com",
         password: "password123",
       });
       expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("message", "Login successful");
-      expect(res.body).toHaveProperty("token");
+      expect(res.body).toHaveProperty("token"); // Expect token to be present
+      expect(res.body).toHaveProperty("expiresIn");
+      expect(res.body).toHaveProperty("user"); // Expect user info
     });
 
     it("should return 400 if email is missing", async () => {
@@ -77,7 +81,10 @@ describe("AuthController", () => {
         password: "password123",
       });
       expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty("message", "Email is required");
+      expect(res.body).toHaveProperty(
+        "message",
+        "Email and password are required"
+      );
     });
 
     it("should return 400 if password is missing", async () => {
@@ -85,7 +92,10 @@ describe("AuthController", () => {
         email: "test@example.com",
       });
       expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty("message", "Password is required");
+      expect(res.body).toHaveProperty(
+        "message",
+        "Email and password are required"
+      );
     });
 
     it("should return 400 if email is invalid", async () => {
@@ -94,7 +104,7 @@ describe("AuthController", () => {
         password: "password123",
       });
       expect(res.statusCode).toBe(400);
-      expect(res.body).toHaveProperty("message", "Email is invalid");
+      expect(res.body).toHaveProperty("message", "Invalid email format");
     });
 
     it("should return 404 if user is not found", async () => {
@@ -107,10 +117,6 @@ describe("AuthController", () => {
     });
 
     it("should return 401 if password is incorrect", async () => {
-      await request(app).post("/register").send({
-        email: "test@example.com",
-        password: "password123",
-      });
       const res = await request(app).post("/login").send({
         email: "test@example.com",
         password: "wrongpassword",

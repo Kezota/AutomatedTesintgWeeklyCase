@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../config/config";
 import bcrypt from "bcrypt";
 
 export async function seed() {
-  const prisma = new PrismaClient();
-
   async function main() {
     // Seeder for Admin
     const hashedPassword = await bcrypt.hash("admin", 10); // Hash password

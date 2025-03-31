@@ -1,8 +1,10 @@
+import { PrismaClient } from "@prisma/client";
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { prisma } from "../config/config";
 import { JWT_SECRET_KEY } from "../config/env";
 import { AuthenticatedRequest } from "../utils/types";
+
+const prisma = new PrismaClient();
 
 export const authMiddleware = async (
   req: AuthenticatedRequest,
@@ -14,7 +16,7 @@ export const authMiddleware = async (
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res
       .status(401)
-      .json({ message: "Authorization token is missing or invalid" }) as any;
+      .json({ message: "Authorization token is missing or invalid" });
   }
 
   const token = authHeader.split(" ")[1];
@@ -27,12 +29,13 @@ export const authMiddleware = async (
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" }) as any;
+      return res.status(404).json({ message: "User not found" });
     }
 
-    req.user = user; // Tambahkan properti `user` ke req
+    req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" }) as any;
+    console.error("Token verification failed:", error); // Log error saat token tidak valid
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
