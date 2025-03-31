@@ -47,7 +47,6 @@ export function Dashboard() {
   } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: fetchProducts,
-    enabled: false,
   });
 
   const handleAddProduct = async () => {

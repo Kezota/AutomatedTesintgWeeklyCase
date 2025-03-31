@@ -4,12 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { registerUser } from "@/services/authService";
+import { useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "@/hooks/useAuthMutation";
 
 const Register = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const navigate = useNavigate();
+  const { mutate, isLoading, isError, error, isSuccess } =
+    useRegisterMutation();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,14 +23,12 @@ const Register = () => {
       return;
     }
 
-    const registerData = { email, password, confirmPassword };
-
-    try {
-      await registerUser(registerData);
-    } catch (error) {
-      toast.error("Registration failed!");
-      console.error("Registration error:", error);
-    }
+    mutate(
+      { email, password, confirmPassword },
+      {
+        onSuccess: () => navigate("/dashboard"),
+      }
+    );
   };
 
   return (
@@ -89,10 +91,9 @@ const Register = () => {
             <Button
               type="submit"
               className="w-full bg-green-500 text-white"
-              // disabled={mutation.isLoading}
+              disabled={isLoading}
             >
-              Register
-              {/* {mutation.isLoading ? "Registering..." : "Register"} */}
+              {isLoading ? "Registering..." : "Register"}
             </Button>
           </div>
         </form>

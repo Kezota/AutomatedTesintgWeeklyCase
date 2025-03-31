@@ -11,11 +11,16 @@ export type Product = {
   stock: number;
 };
 
-export type LoginFields = {
+export type LoginPayload = {
   email: string;
   password: string;
 };
 
-export type RegisterFields = LoginFields & {
+export type RegisterPayload = LoginPayload & {
   confirmPassword: string;
+};
+
+export type LoginRegisterResponse = {
+  token: string;
+  user: Admin;
 };

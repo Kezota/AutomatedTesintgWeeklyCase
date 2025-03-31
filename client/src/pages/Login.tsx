@@ -1,25 +1,25 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { loginUser } from "@/services/authService";
+import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "@/hooks/useAuthMutation";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { mutate, isLoading } = useLoginMutation();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const loginData = { email, password };
-
-    try {
-      await loginUser(loginData);
-    } catch (error) {
-      toast.error("Login failed!");
-      console.error("Login error:", error);
-    }
+    mutate(
+      { email, password },
+      {
+        onSuccess: () => navigate("/dashboard"),
+      }
+    );
   };
 
   return (
@@ -65,10 +65,9 @@ const Login = () => {
             <Button
               type="submit"
               className="w-full bg-blue-500 text-white"
-              // disabled={mutation.isLoading}
+              disabled={isLoading}
             >
-              Login
-              {/* {mutation.isLoading ? "Logging In..." : "Login"} */}
+              {isLoading ? "Logging In..." : "Login"}
             </Button>
           </div>
         </form>

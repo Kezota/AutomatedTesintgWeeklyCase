@@ -1,26 +1,29 @@
 import { API } from "@/lib/API";
-import { Admin, LoginFields, RegisterFields } from "@/lib/types";
+import { Admin, LoginPayload, RegisterPayload } from "@/lib/types";
 import { toast } from "react-toastify";
 
+type LoginRegisterResponse = {
+  token: string;
+  user: Admin;
+};
+
 // Function to handle the login request
-export const loginUser = async (loginData: LoginFields): Promise<Admin> => {
-  try {
-    const response = await API.post<Admin>("/login", loginData);
-    return response.data;
-  } catch (error) {
-    toast.error("Login failed!");
-    throw error;
-  }
+export const login = async (
+  payload: LoginPayload
+): Promise<LoginRegisterResponse> => {
+  const response = await API.post<LoginRegisterResponse>("/login", payload);
+  return response.data;
 };
 
 // Function to handle the register request
-export const registerUser = async (
-  registerData: RegisterFields
-): Promise<void> => {
-  try {
-    await API.post("/register", registerData);
-  } catch (error) {
-    toast.error("Registration failed!");
-    throw error;
-  }
+export const register = async (
+  payload: RegisterPayload
+): Promise<LoginRegisterResponse> => {
+  const response = await API.post<LoginRegisterResponse>("/register", payload);
+  return response.data;
+};
+
+// Function to handle the logout request
+export const logout = async (): Promise<void> => {
+  await API.post("/logout");
 };
