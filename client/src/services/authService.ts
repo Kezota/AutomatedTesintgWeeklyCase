@@ -1,6 +1,5 @@
 import { API } from "@/lib/API";
 import { Admin, LoginPayload, RegisterPayload } from "@/lib/types";
-import { toast } from "react-toastify";
 
 type LoginRegisterResponse = {
   token: string;
