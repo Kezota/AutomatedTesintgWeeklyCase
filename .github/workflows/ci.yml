@@ -29,14 +29,6 @@ jobs:
           echo "DIRECT_URL=${{ secrets.DIRECT_URL }}" >> $GITHUB_ENV
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
 
-      # Check if the environment variables are correctly set
-      - name: Debug environment variables
-        run: |
-          echo "PORT=$PORT"
-          echo "DATABASE_URL=$DATABASE_URL"
-          echo "DIRECT_URL=$DIRECT_URL"
-          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY"
-
       # Setup Node.js for both client and server
       - name: Set up Node.js for client and server
         uses: actions/setup-node@v2
