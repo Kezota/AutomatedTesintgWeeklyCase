@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18, 20]
+        node-version: [18, 20] # Versi Node.js yang digunakan untuk testing (Pastikan >= 18.18)
 
     steps:
       - name: Checkout repository
@@ -34,10 +34,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Run Prisma Migrations
+      # Run Prisma Migrations with explicit schema path
       - name: Run Prisma Migrations
         run: |
-          npx prisma migrate deploy
+          npx prisma migrate deploy --schema=server/src/models/main.prisma
 
       # Install dependencies and run tests for client
       - name: Install dependencies and run tests for client
