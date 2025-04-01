@@ -3,10 +3,10 @@ name: CI for Client and Server
 on:
   push:
     branches:
-      - main # Ganti dengan branch utama yang kamu pakai (misalnya 'main' atau 'master')
+      - main
   pull_request:
     branches:
-      - main # Ganti dengan branch utama yang kamu pakai
+      - main
 
 jobs:
   test:
@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18, 20] # Versi Node.js yang digunakan untuk testing (Pastikan >= 18.18)
+        node-version: [18, 20]
 
     steps:
       - name: Checkout repository
@@ -33,6 +33,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
+      # Run Prisma Migrations
+      - name: Run Prisma Migrations
+        run: |
+          npx prisma migrate deploy
 
       # Install dependencies and run tests for client
       - name: Install dependencies and run tests for client

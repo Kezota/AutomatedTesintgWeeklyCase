@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 // Clean up database before all tests
 beforeAll(async () => {
+  await prisma.$connect();
   await prisma.admin.deleteMany();
   await prisma.product.deleteMany();
 });
