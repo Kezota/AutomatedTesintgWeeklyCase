@@ -14,13 +14,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, 16, 18] # Versi Node.js yang digunakan untuk testing
+        node-version: [18, 20] # Versi Node.js yang digunakan untuk testing (Pastikan >= 18.18)
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Setup Node.js untuk kedua bagian
+      # Setup Node.js for both client and server
       - name: Set up Node.js for client and server
         uses: actions/setup-node@v2
         with:
