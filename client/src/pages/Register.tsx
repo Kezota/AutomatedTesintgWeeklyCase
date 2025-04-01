@@ -71,13 +71,13 @@ const Register = () => {
 
           <div className="mb-4">
             <Label
-              htmlFor="confirmPassword"
+              htmlFor="confirm-password" // Perbarui id agar unik
               className="block text-sm font-medium text-gray-700"
             >
               Confirm Password
             </Label>
             <Input
-              id="confirmPassword"
+              id="confirm-password" // Perbarui id agar unik
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               type="password"
