@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env ENVIROMENT=DEV nodemon",
     "prod": "cross-env ENVIROMENT=PROD nodemon",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --wathAll",
     "build": "tsup ./src/index.ts",
     "seed": "tsx ./src/.scripts/runSeeder.ts",
     "create:router": "tsx ./src/.scripts/createRouter.ts",

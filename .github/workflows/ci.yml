@@ -38,7 +38,7 @@ jobs:
       # Run Prisma Migrations with explicit schema path
       - name: Run Prisma Migrations
         run: |
-          npx prisma migrate deploy --schema=server/src/models/main.prisma
+          npx prisma migrate dev --schema=server/src/models/main.prisma
 
       # Install dependencies and run tests for client
       - name: Install dependencies and run tests for client
