@@ -17,9 +17,3 @@ afterAll(async () => {
 
   await prisma.$disconnect();
 });
-
-module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  setupFilesAfterEnv: ["./tests/setup.ts"],
-};

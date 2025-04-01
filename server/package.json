@@ -59,6 +59,7 @@
     "clearMocks": true,
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "testTimeout": 10000,
     "setupFilesAfterEnv": [
       "<rootDir>/src/tests/jest.setup.ts",
       "<rootDir>/src/tests/singleton.ts"
@@ -68,6 +69,9 @@
     ],
     "transform": {
       "^.+\\.(t|j)sx?$": "@swc/jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
     }
   }
 }
