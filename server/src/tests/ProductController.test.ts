@@ -2,6 +2,11 @@ import request from "supertest";
 import express from "express";
 import router from "../routes";
 
+// Print environment variables for debugging
+console.log("Database URL:", process.env.DATABASE_URL);
+console.log("Direct URL:", process.env.DIRECT_URL);
+console.log("JWT Secret:", process.env.JWT_SECRET);
+
 const app = express();
 app.use(express.json());
 app.use("/", router);
@@ -22,6 +27,7 @@ beforeAll(async () => {
 describe("ProductController", () => {
   describe("GET /products", () => {
     it("should retrieve all products", async () => {
+      console.log("Token:", token); // Log the token to check if it's valid
       const res = await request(app)
         .get("/products")
         .set("Authorization", `Bearer ${token}`);
