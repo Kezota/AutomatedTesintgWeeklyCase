@@ -42,7 +42,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "^6.5.0",
     "bcrypt": "^5.1.1",
     "chalk": "^5.4.1",
     "cors": "^2.8.5",
@@ -50,7 +50,7 @@
     "execa": "^9.5.2",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.2.1"
+    "prisma": "^6.5.0"
   },
   "prisma": {
     "schema": "./src/models"
@@ -60,11 +60,11 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
-      "<rootDir>/src/test/jest.setup.ts",
-      "<rootDir>/src/test/singleton.ts"
+      "<rootDir>/src/tests/jest.setup.ts",
+      "<rootDir>/src/tests/singleton.ts"
     ],
     "testMatch": [
-      "**/test/**/*.test.ts"
+      "**/tests/**/*.test.ts"
     ],
     "transform": {
       "^.+\\.(t|j)sx?$": "@swc/jest"
