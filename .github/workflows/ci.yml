@@ -1,0 +1,41 @@
+name: CI for Client and Server
+
+on:
+  push:
+    branches:
+      - main # Ganti dengan branch utama yang kamu pakai (misalnya 'main' atau 'master')
+  pull_request:
+    branches:
+      - main # Ganti dengan branch utama yang kamu pakai
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14, 16, 18] # Versi Node.js yang digunakan untuk testing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Setup Node.js untuk kedua bagian
+      - name: Set up Node.js for client and server
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install dependencies and run tests for client
+      - name: Install dependencies and run tests for client
+        run: |
+          cd client
+          npm install
+          npm test
+
+      # Install dependencies and run tests for server
+      - name: Install dependencies and run tests for server
+        run: |
+          cd server
+          npm install
+          npm test
