@@ -5,7 +5,7 @@ import router from "../routes";
 // Print environment variables for debugging
 console.log("Database URL:", process.env.DATABASE_URL);
 console.log("Direct URL:", process.env.DIRECT_URL);
-console.log("JWT Secret:", process.env.JWT_SECRET);
+console.log("JWT Secret:", process.env.JWT_SECRET_KEY);
 
 const app = express();
 app.use(express.json());
