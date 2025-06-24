@@ -3,9 +3,9 @@ name: CI for Client and Server
 on:
   push:
     branches:
-      - main # 3
+      - main
   pull_request:
-    branches: # 5
+    branches: # 3
       - main # 4
 
 jobs:
