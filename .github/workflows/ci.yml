@@ -5,7 +5,7 @@ on:
     branches:
       - main # 3
   pull_request:
-    branches:
+    branches: # 5
       - main # 4
 
 jobs:
