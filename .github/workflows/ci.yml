@@ -5,8 +5,8 @@ on:
     branches:
       - main
   pull_request:
-    branches: # 3
-      - main # 4
+    branches:
+      - main
 
 jobs:
   test:
@@ -15,11 +15,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20]
+        node-version: [18]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2 # hi
+        uses: actions/checkout@v2
 
       # Set up environment variables from GitHub Secrets
       - name: Set up environment variables
